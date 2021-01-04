@@ -1,0 +1,60 @@
+using System;
+
+namespace NanoSoft
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            while (true)
+            {
+                string[] mainArgs = Console.ReadLine().Split(' ');
+                string[] objectSizeArray = Console.ReadLine().Split(' ');
+
+                int numberOfObjects = int.Parse(mainArgs[0]);
+                int numberOfBoxes = int.Parse(mainArgs[1]);
+                int boxSize = int.Parse(mainArgs[2]);
+
+                int answer = 0;
+                bool allObjectsCanBeInBoxes = true;
+                int usedSpaceOfCurrentBox = 0;
+                int fulledBoxesCount = 0;
+
+                for (int i = numberOfObjects - 1; i >= 0; i--) // check objects from last object to first, to findout every object can be in boxes or not
+                {
+                    int currentObjectSize = int.Parse(objectSizeArray[i]);
+                    if ((currentObjectSize > boxSize) || (fulledBoxesCount >= numberOfBoxes)) // if we don't have any empty box or current object size is bigger than boxes size
+                    {
+                        answer = numberOfObjects - i - 1;
+                        allObjectsCanBeInBoxes = false;
+                        break;
+                    }
+                    else // we need to insert current object in current box or a new box
+                    {
+                        if ((usedSpaceOfCurrentBox + currentObjectSize) <= boxSize) // if current box has enough free space
+                            usedSpaceOfCurrentBox += currentObjectSize;
+                        else // we need to insert current object in a new box
+                        {
+                            if ((fulledBoxesCount + 1) < numberOfBoxes) // if we have free box yet
+                            {
+                                fulledBoxesCount++;
+                                usedSpaceOfCurrentBox = currentObjectSize;
+                            }
+                            else 
+                            {
+                                answer = numberOfObjects - i - 1;
+                                allObjectsCanBeInBoxes = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (allObjectsCanBeInBoxes)
+                    answer = numberOfObjects;
+
+                Console.WriteLine(answer);
+            }
+        }
+    }
+}
